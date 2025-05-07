@@ -6,11 +6,14 @@ from django.utils import timezone
 from django import forms
 
 class Category(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=250, unique=True)
     
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        super(Category, self).save(*args, **kwargs)
+    
     def __str__(self):
-        return self.name
+        return self.name.lower()
     
     class Meta:
         verbose_name_plural = 'Categories'
@@ -18,8 +21,7 @@ class Category(models.Model):
     
     
 class Product(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    title = models.CharField(max_length=250, null=False)
+    name = models.CharField(max_length=250, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -30,12 +32,12 @@ class Product(models.Model):
     stock = models.PositiveBigIntegerField(default=0)
     
     def __str__(self):
-        return self.title
+        return self.name
     
     def save(self, *args, **kwargs):
         if not self.seo_slug:
-            truncated_title = self.title[:40]  
-            self.seo_slug = f"{slugify(truncated_title)}--{timezone.now().strftime('%Y%m%d%H%M%S')}"
+            truncated_name = self.name[:40]  
+            self.seo_slug = f"{slugify(truncated_name)}--{timezone.now().strftime('%Y%m%d%H%M%S')}"
         
         super(Product, self).save(*args, **kwargs)
     

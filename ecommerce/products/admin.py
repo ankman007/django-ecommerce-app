@@ -10,11 +10,11 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'price', 'is_available', 'stock', 'created_at', 'image_preview')  
-    search_fields = ('title', 'category__name')
+    list_display = ('name', 'category', 'price', 'is_available', 'stock', 'created_at', 'image_preview')  
+    search_fields = ('name', 'category__name')
     list_filter = ('category', 'is_available')
     ordering = ['-created_at']
-    prepopulated_fields = {'seo_slug': ('title',)}
+    prepopulated_fields = {'seo_slug': ('name',)}
     list_editable = ('is_available', 'stock')
 
     def image_preview(self, obj):
