@@ -25,7 +25,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products")
     images = models.ImageField(upload_to="images/", null=True, blank=True)
-    seo_slug = models.SlugField(unique=True, blank=True)
+    seo_slug = models.SlugField()
     is_available = models.BooleanField(default=True)
     stock = models.PositiveBigIntegerField(default=0)
     
@@ -34,9 +34,10 @@ class Product(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.seo_slug:
-            self.seo_slug = f"{self.seo_slug}--{timezone.now().strftime('%Y%m%d%H%M%S')}"
-
-        super().save(*args, **kwargs)
+            truncated_title = self.title[:40]  
+            self.seo_slug = f"{slugify(truncated_title)}--{timezone.now().strftime('%Y%m%d%H%M%S')}"
+        
+        super(Product, self).save(*args, **kwargs)
     
     class Meta:
         verbose_name_plural = 'Products'

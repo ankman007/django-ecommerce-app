@@ -1,11 +1,90 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
-{{ page_title }}
+  {{ page_title }}
 {% endblock %}
 
 {% block content %}
+<style>
+  .page-header {
+    background: linear-gradient(135deg, #6f42c1, #5a189a);
+    color: #fff;
+    padding: 2rem 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
 
-<h3>{{ user }}</h3>
+  .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
 
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-img-top {
+    object-fit: cover;
+    height: 200px;
+  }
+
+  .no-products {
+    padding: 3rem 0;
+    text-align: center;
+    font-size: 1.25rem;
+    color: #6c757d;
+  }
+</style>
+
+<div class="container py-5">
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for product in products %}
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm d-flex flex-column">
+        {% if product.images %}
+        <img src="{{ product.images.url }}" class="card-img-top rounded-top" alt="{{ product.title }}" loading="lazy">
+        {% else %}
+        <img src="{% static 'placeholder.png' %}" class="card-img-top rounded-top" alt="Image not available" loading="lazy">
+        {% endif %}
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ product.title }}</h5>
+
+          <ul class="list-unstyled small mb-3 mt-auto">
+            <li><i class="bi bi-cash-coin me-1 text-success"></i><strong>Price:</strong> $ {{ product.price }}</li>
+            <li><i class="bi bi-box me-1 text-primary"></i><strong>Stock:</strong> {{ product.stock }}</li>
+            <li>
+              <i class="bi bi-check-circle me-1 {% if product.is_available %}text-success{% else %}text-danger{% endif %}"></i>
+              <strong>Status:</strong>
+              <span class="badge bg-{{ product.is_available|yesno:'success,danger' }}">
+                {{ product.is_available|yesno:"Available,Out of Stock" }}
+              </span>
+            </li>
+          </ul>
+
+          <div class="d-flex justify-content-between gap-2">
+            <a class="btn btn-outline-primary btn-sm w-100">
+              <i class="bi bi-eye"></i> View Details
+            </a>
+            <form method="post"class="w-100">
+              <button type="submit" class="btn btn-success btn-sm w-100">
+                <i class="bi bi-cart-plus"></i> Add to Cart
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="no-products">
+        <i class="bi bi-box-seam"></i> No products available at the moment.
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}
