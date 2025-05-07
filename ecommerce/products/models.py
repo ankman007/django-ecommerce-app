@@ -3,6 +3,7 @@ import hashlib
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
+from django import forms
 
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
@@ -41,6 +42,5 @@ class Product(models.Model):
         verbose_name_plural = 'Products'
         ordering = ['created_at']
         
-    
     
 

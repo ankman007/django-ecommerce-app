@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ page_title }}
+{% endblock %}
+
+{% block content %}
+
+{% if data %}
+<ul>
+    {% for item in data %}
+        <li> {{ item.title }} {{ item.price }} {{ item.description }} </li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p>No data available</p>
+{% endif %}
+
+
+{% endblock %}
