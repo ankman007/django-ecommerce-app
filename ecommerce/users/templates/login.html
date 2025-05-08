@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Login - My E-commerce App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Login</h3>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Please correct the errors below.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}"> 
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username or Email</label>
+                        <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}" required>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="password" name="password" required>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+                </form>
+                <hr>
+                <div class="text-center">
+                    <p>Don't have an account? <a href="{% url 'sign_up' %}">Sign Up</a></p> 
+                    <p><a href="#">Forgot password?</a></p> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

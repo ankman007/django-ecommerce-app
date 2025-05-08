@@ -6,4 +6,4 @@ class User(models.Model):
     password_hash = models.TextField(null=False)
     
     def __str__(self):
-        return f"User ID: {self.id}\nUser email: {self.email}"
+        return {self.email}
