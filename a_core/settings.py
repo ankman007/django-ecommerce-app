@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'allauth.account',
 
     # My apps
-    'a_home',
     'a_users',
     'a_shop',
 ]

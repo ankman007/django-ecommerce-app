@@ -1,15 +1,17 @@
 {% load static %}
 <header class="flex items-center justify-between bg-gray-800 h-20 px-8 text-white sticky top-0 z-40">
     <div>
-        <a class="flex items-center gap-2" href="/">
+        <a class="flex items-center gap-2" href="/shop/list">
             <img class="h-6" src="{% static 'images/logo.svg' %}" alt="Logo"/>
-            <span class="text-lg font-bold">Project Title</span>
+            <span class="text-lg font-bold">eCommerce store</span>
         </a>
     </div>
     <nav class="block relative">
         <ul class="navitems flex items-center justify-center h-full">
             {% if request.user.is_authenticated %}
             <li><a href="/">Home</a></li>
+            <li><a href="/detail">Detail</a></li>
+            <li><a href="/cart">Cart</a></li>
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="{{ request.user.profile.avatar }}" alt="Avatar" />
