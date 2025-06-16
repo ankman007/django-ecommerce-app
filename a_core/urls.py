@@ -11,6 +11,7 @@ urlpatterns = [
     path('', include('a_home.urls')),
     path('profile/', include('a_users.urls')),
     path('@<username>/', profile_view, name="profile"),
+    path('/shop', include('a_shop.urls'))
 ]
 
 if settings.DEBUG:

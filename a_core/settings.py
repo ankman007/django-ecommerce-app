@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     # My apps
     'a_home',
     'a_users',
-    'a_ecommerce',
+    'a_shop',
 ]
 
 SITE_ID = 1
