@@ -6,7 +6,7 @@ Django-based ecommerce store leveraging HTMX for dynamic frontend updates withou
 - Django
 - HTMX
 - Bootstrap
-- PostgreSQL
+- Sqlite3
 - Stripe API
 
 ## To set up this project

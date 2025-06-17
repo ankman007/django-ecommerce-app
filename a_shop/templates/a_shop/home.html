@@ -1,34 +1,73 @@
-{% extends 'layouts/blank.html' %} 
-{% block content %}
+{% extends 'layouts/blank.html' %} {% block content %}
 
 <div class="container my-5">
   <div class="row gy-4">
     <div class="col-lg-9">
+      {% if selected_category %}
+      <h1 class="mb-3">Selected category: {{ selected_category }}</h1>
+      {% else %}
+      <h1 class="mb-3">All Products</h1>
+      {% endif %} 
+      
+      {% if products %}
       <div class="row g-4">
         {% for product in products %}
         <div class="col-12 col-sm-6 col-md-4 d-flex">
-          <div class="card shadow-sm border-0 w-100 rounded-3 hover-shadow transition" style="display: flex; flex-direction: column;">
-            <img
-              src="{{ product.images.first.images.url }}"
-              class="card-img-top rounded-top-3"
-              alt="{{ product.name }}"
-              style="object-fit: cover; height: 200px;"
-            />
+          <div
+            class="card shadow-sm border-0 w-100 rounded-3 hover-shadow transition"
+            style="display: flex; flex-direction: column"
+          >
+          <div
+              style="
+                height: 250px;
+                width: 100%;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+            <a href="{% url 'product_detail' product.id %}">
+              <img
+                src="{{ product.images.first.images.url }}"
+                class="card-img-top rounded-top-3"
+                alt="{{ product.name }}"
+                style="object-fit: cover; height: 200px"
+              />
+            </a>
+          </div>
             <div class="card-body d-flex flex-column flex-grow-1">
-              <h5 class="card-title fw-bold">{{ product.name }}</h5>
-              <p class="text-muted small mb-1 text-uppercase">{{ product.category }}</p>
+              <a href="{% url 'product_detail' product.id %}">
+                <h5 class="card-title fw-bold">{{ product.name }}</h5>
+              </a>
+              <p class="text-muted small mb-1 text-uppercase">
+                {{ product.category }}
+              </p>
               <p class="fw-bold text-success fs-5 mb-2">${{ product.price }}</p>
-              <p class="mb-2"><strong>Stock:</strong> <span class="text-secondary">{{ product.stock }}</span></p>
+              <p class="mb-2">
+                <strong>Stock:</strong>
+                <span class="text-secondary">{{ product.stock }}</span>
+              </p>
               <p class="text-muted small mb-3">
                 <strong>Updated:</strong> {{ product.updated_at|date:"M d, Y" }}
               </p>
-              <p class="card-text mb-4 text-truncate" style="max-height: 3.5rem; overflow: hidden;">{{ product.description }}</p>
+              <p
+                class="card-text mb-4 text-truncate"
+                style="max-height: 3.5rem; overflow: hidden"
+              >
+                {{ product.description }}
+              </p>
               <a href="#" class="btn btn-dark mt-auto w-100">Add to Cart</a>
             </div>
           </div>
         </div>
         {% endfor %}
       </div>
+      {% else %}
+      <div class="alert alert-danger" role="alert">
+        No products available in this category at the moment.
+      </div>
+      {% endif %}
     </div>
 
     <div class="col-lg-3">
@@ -41,14 +80,16 @@
             {% for category in categories %}
             <li>
               <a
-                href="#"
+                href="{% url 'category' category.slug %}"
                 class="category-link d-block py-2 px-3 rounded text-dark text-decoration-none fw-semibold transition"
-                style="transition: background-color 0.3s, color 0.3s;"
+                style="transition: background-color 0.3s, color 0.3s"
                 onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.color='#1a1a1a';"
                 onmouseout="this.style.backgroundColor=''; this.style.color='';"
               >
-                {{ category.name }} 
-                <span class="badge bg-dark rounded-pill float-end">{{ category.product_count }}</span>
+                {{ category.name }}
+                <span class="badge bg-dark rounded-pill float-end"
+                  >{{ category.product_count }}</span
+                >
               </a>
             </li>
             {% endfor %}
