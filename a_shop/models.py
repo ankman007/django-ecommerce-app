@@ -52,7 +52,7 @@ class ProductImage(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.alt_text:
-            self.alt_text = slugify(self.name)
+            self.alt_text = slugify(self.product.name)
         super().save(*args, **kwargs)
 
 

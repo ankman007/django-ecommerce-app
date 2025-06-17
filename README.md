@@ -1,62 +1,18 @@
-#### Video Tutorial for this project
-https://youtu.be/SQ4A7Q6_md8
-<br><br>
+# Project Description 
+Django-based ecommerce store leveraging HTMX for dynamic frontend updates without full page reloads and integrated with Stripe for secure & flexible checkout processing.
 
-#### Getting the files
-Download zip file<br> 
-or <br>
-git clone command (need git to be installed) and remove git folder afterwards
-```
-git clone https://github.com/andyjud/django-starter.git . && rm -rf .git
-```
-<br><br><br>
+## Technology used
 
-## Setup
+- Django
+- HTMX
+- Bootstrap
+- PostgreSQL
+- Stripe API
 
-#### - Create Virtual Environment
-###### # Mac
-```
-python3 -m venv venv
-source venv/bin/activate
-```
+## To set up this project
 
-###### # Windows
-```
-python3 -m venv venv
-.\venv\Scripts\activate.bat
-```
-
-<br>
-
-#### - Install dependencies
-```
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-<br>
-
-#### - Migrate to database
-```
-python manage.py migrate
-python manage.py createsuperuser
-```
-
-<br>
-
-#### - Run application
-```
-python manage.py runserver
-```
-
-<br>
-
-#### - Generate Secret Key ( ! Important for deployment ! )
-```
-python manage.py shell
-from django.core.management.utils import get_random_secret_key
-print(get_random_secret_key())
-exit()
-```
-
-
+1. cd into project directory
+2. Install dependencies through command `pip install -r requirements.txt`
+3. Apply migrations `python manage.py migrate`
+4. Run the server `python manage.py runserver`
+5. Project should be live at localhost port 8000.
