@@ -93,4 +93,4 @@ class Payment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Payment by {self.user.username} | ₹{self.total_price} | Status: {self.get_status_display()}"
+        return f"Payment by {self.user.username} | ${self.total_price} | Status: {self.get_status_display()}"
