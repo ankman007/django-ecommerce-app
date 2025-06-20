@@ -41,7 +41,33 @@
       >
         {{ product.description }}
       </p>
-      <a href="#" class="btn btn-dark mt-auto w-100">Add to Cart</a>
+
+      <form
+        hx-post="{% url 'add_to_cart' product.id %}"
+        hx-target="#cart-count"
+        hx-swap="outerHTML"
+        class="mt-auto w-100 d-flex flex-column gap-2"
+      >
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label class="input-group-text" for="quantity-{{ product.id }}"
+            >Qty</label
+          >
+          <input
+            type="number"
+            name="quantity"
+            id="quantity-{{ product.id }}"
+            class="form-control"
+            value="1"
+            min="1"
+            max="{{ product.stock }}"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100">Add to Cart</button>
+      </form>
     </div>
   </div>
 </div>

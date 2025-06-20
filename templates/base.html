@@ -15,6 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
     <script
@@ -147,9 +148,13 @@
   </head>
   <body
     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-    class="{% block class %}{% endblock %}"
+    class="min-h-screen min-h-screen flex flex-col {% block class %}{% endblock %}"
   >
+  <main class="flex-grow">
     {% include 'includes/messages.html' %} {% include 'includes/header.html' %}
     {% block layout %} {% endblock %} {% block javascript %}{% endblock %}
+  </main>
+    {% include 'includes/footer.html' %}
   </body>
+  
 </html>
