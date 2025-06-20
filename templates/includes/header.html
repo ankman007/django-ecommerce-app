@@ -5,7 +5,7 @@
   <div>
     <a class="flex items-center gap-2" href="/">
       <img class="h-6" src="{% static 'images/logo.svg' %}" alt="Logo" />
-      <span class="text-lg font-bold">eCommerce store</span>
+      <span class="text-lg font-bold">Albany Wholesale</span>
     </a>
   </div>
   <nav class="block relative">
@@ -95,29 +95,30 @@
     </ul>
   </nav>
   <script>
-    function updateCartCount(event) {
-      if (
-        event.detail.xhr.responseType === "" ||
-        event.detail.xhr.responseType === "text"
-      ) {
-        try {
-          const data = JSON.parse(event.detail.xhr.responseText);
-          if (data.cart_count_html) {
-            document.querySelector("#cart-count").outerHTML =
-              data.cart_count_html;
-          }
-          if (data.button_html) {
-            const target = event.target.querySelector(
-              `#add-to-cart-button-${event.target.dataset.productId}`
-            );
-            if (target) {
-              target.outerHTML = data.button_html;
-            }
-          }
-        } catch (e) {
-          console.error("Failed to update cart count:", e);
+  document.body.addEventListener("htmx:afterSwap", function (event) {
+    // Automatically handled by HX response with updated #cart-count
+    if (
+      event.detail &&
+      event.detail.xhr &&
+      event.detail.xhr.responseType === "" || event.detail.xhr.responseType === "text"
+    ) {
+      try {
+        const data = JSON.parse(event.detail.xhr.responseText);
+        if (data.cart_count_html) {
+          document.querySelector("#cart-count").outerHTML = data.cart_count_html;
         }
+        if (data.button_html && event.target.closest("form")) {
+          const form = event.target.closest("form");
+          const targetDiv = form.querySelector('[id^="add-to-cart-btn-"]');
+          if (targetDiv) {
+            targetDiv.outerHTML = data.button_html;
+          }
+        }
+      } catch (e) {
+        console.error("Cart count update failed:", e);
       }
     }
-  </script>
+  });
+</script>
+
 </header>
