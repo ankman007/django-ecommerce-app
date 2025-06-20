@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from decimal import Decimal
 from .utils import generate_short_uuid
+from ckeditor.fields import RichTextField
 
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=200)
@@ -26,7 +27,7 @@ class Product(models.Model):
         editable=False
     )
     name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
+    description = RichTextField(blank=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,

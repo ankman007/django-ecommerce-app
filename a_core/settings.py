@@ -12,6 +12,7 @@ CSRF_TRUSTED_ORIGINS = [ 'https://*' ]
 
 
 INSTALLED_APPS = [
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,6 +29,8 @@ INSTALLED_APPS = [
     'a_users',
     'a_shop',
 ]
+
+INSTALLED_APPS += ['ckeditor']
 
 SITE_ID = 1
 
