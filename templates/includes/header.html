@@ -46,21 +46,6 @@
           </ul>
         </div>
       </li>
-      {% else %}
-      <li>
-        <a
-          href="{% url 'account_login' %}"
-          class="px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 font-medium"
-          >Login</a
-        >
-      </li>
-      <li>
-        <a
-          href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}"
-          class="px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 font-medium"
-          >Signup</a
-        >
-      </li>
       {% endif %}
       <li class="nav-item">
         <a class="nav-link position-relative" href="{% url 'cart' %}">
@@ -69,31 +54,70 @@
             id="cart-count"
             class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
           >
-            {{ cart_count  }}
+            {{ cart_count }}
           </span>
         </a>
+      </li>
+      <li class="nav-item">
+        <form
+          action="{% url 'product-search' %}"
+          method="get"
+          class="flex items-center bg-gray-700 text-white rounded-md overflow-hidden h-10 w-full max-w-md mx-6"
+        >
+          <input
+            type="text"
+            name="q"
+            placeholder="Search products..."
+            class="bg-transparent px-4 py-2 w-full placeholder-gray-300 text-white focus:outline-none"
+            required
+          />
+          <button
+            type="submit"
+            class="px-4 bg-gray-600 hover:bg-gray-500 transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
+              />
+            </svg>
+          </button>
+        </form>
       </li>
     </ul>
   </nav>
   <script>
-  function updateCartCount(event) {
-    if (event.detail.xhr.responseType === "" || event.detail.xhr.responseType === "text") {
-      try {
-        const data = JSON.parse(event.detail.xhr.responseText);
-        if (data.cart_count_html) {
-          document.querySelector("#cart-count").outerHTML = data.cart_count_html;
-        }
-        if (data.button_html) {
-          const target = event.target.querySelector(`#add-to-cart-button-${event.target.dataset.productId}`);
-          if (target) {
-            target.outerHTML = data.button_html;
+    function updateCartCount(event) {
+      if (
+        event.detail.xhr.responseType === "" ||
+        event.detail.xhr.responseType === "text"
+      ) {
+        try {
+          const data = JSON.parse(event.detail.xhr.responseText);
+          if (data.cart_count_html) {
+            document.querySelector("#cart-count").outerHTML =
+              data.cart_count_html;
           }
+          if (data.button_html) {
+            const target = event.target.querySelector(
+              `#add-to-cart-button-${event.target.dataset.productId}`
+            );
+            if (target) {
+              target.outerHTML = data.button_html;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to update cart count:", e);
         }
-      } catch (e) {
-        console.error("Failed to update cart count:", e);
       }
     }
-  }
-</script>
-
+  </script>
 </header>
