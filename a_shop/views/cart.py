@@ -8,8 +8,25 @@ from django.http import HttpResponse
 
 
 def cart(request):
-    products = Product.objects.all()
-    return render(request, 'a_shop/cart.html', {'products': products})
+    cart_items = []
+
+    if request.user.is_authenticated:
+        try:
+            cart = Cart.objects.get(user=request.user)
+            cart_items = cart.items.select_related('product').all()
+        except Cart.DoesNotExist:
+            cart_items = []
+    else:
+        session_cart = request.session.get('cart', {})
+        product_ids = session_cart.keys()
+        products = Product.objects.filter(id__in=product_ids)
+        quantity_map = {pid: qty for pid, qty in session_cart.items()}
+        cart_items = [
+            {'product': product, 'quantity': quantity_map[product.id]}
+            for product in products
+        ]
+
+    return render(request, 'a_shop/cart.html', {'cart_items': cart_items})
 
 
 def add_to_cart(request, product_id):

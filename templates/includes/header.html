@@ -46,6 +46,7 @@
           </ul>
         </div>
       </li>
+
       {% endif %}
       <li class="nav-item">
         <a class="nav-link position-relative" href="{% url 'cart' %}">
@@ -96,7 +97,6 @@
   </nav>
   <script>
   document.body.addEventListener("htmx:afterSwap", function (event) {
-    // Automatically handled by HX response with updated #cart-count
     if (
       event.detail &&
       event.detail.xhr &&
