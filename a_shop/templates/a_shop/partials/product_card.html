@@ -30,8 +30,7 @@
       <p class="text-muted small mb-1 text-uppercase">{{ product.category }}</p>
       <p class="fw-bold text-success fs-5 mb-2">${{ product.price }}</p>
       <p class="mb-2">
-        <strong>Stock:</strong>
-        <span class="text-secondary">{{ product.stock }}</span>
+        <i class="bi bi-box-seam me-1"></i>Stock left: {{ product.stock }}
       </p>
       <p class="text-muted small mb-3">
         <strong>Updated:</strong> {{ product.updated_at|date:"M d, Y" }}

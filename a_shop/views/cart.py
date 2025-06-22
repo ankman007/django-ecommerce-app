@@ -79,18 +79,30 @@ def add_to_cart(request, product_id):
 def remove_from_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    if request.user.is_authenticated:
-        try:
-            cart = Cart.objects.get(user=request.user)
-            cart_item = cart.items.get(product=product)
-            cart_item.delete()
-        except (Cart.DoesNotExist, CartItem.DoesNotExist):
-            logger.warning(f"Attempted to remove non-existing cart item for product {product_id}")
-    else:
-        cart = request.session.get('cart', {})
-        product_id_str = str(product_id)
-        if product_id_str in cart:
-            del cart[product_id_str]
-            request.session['cart'] = cart
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            try:
+                cart = Cart.objects.get(user=request.user)
+                cart_item = cart.items.get(product=product)
+                cart_item.delete()
+                cart_items = cart.items.select_related('product')
+            except (Cart.DoesNotExist, CartItem.DoesNotExist):
+                cart_items = []
+        else:
+            cart = request.session.get('cart', {})
+            product_id_str = str(product_id)
+            if product_id_str in cart:
+                del cart[product_id_str]
+                request.session['cart'] = cart
 
-    return redirect('cart')
+            cart_items = []
+            for pid, data in cart.items():
+                prod = Product.objects.filter(id=pid).first()
+                if prod:
+                    cart_items.append({'product': prod, 'quantity': data})
+
+
+        return render(request, "a_shop/partials/cart_items.html", {"cart_items": cart_items})
+
+    return redirect("cart")
+

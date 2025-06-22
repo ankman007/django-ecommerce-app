@@ -1,0 +1,48 @@
+<div id="cart-container">
+  {% if cart_items %}
+    {% for item in cart_items %}
+      {% with item.product as product %}
+        <div class="card mb-4 shadow-sm cart-item border-0 rounded-4 px-3 py-3" data-price="{{ product.price }}">
+          <div class="row g-3 align-items-center">
+            <div class="col-1 d-flex justify-content-center">
+              <input type="checkbox" class="form-check-input item-checkbox mt-1" checked />
+            </div>
+            <div class="col-3">
+              <a href="{% url 'product_detail' product.id %}">
+                <img src="{{ product.images.first.images.url }}" alt="Product Image" class="img-fluid rounded-3 shadow-sm" style="height: 160px; object-fit: cover; width: 100%" />
+              </a>
+            </div>
+            <div class="col-5">
+              <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                <h5 class="fw-bold mb-1">{{ product.name }}</h5>
+              </a>
+              <p class="text-muted small mb-1">{{ product.category }}</p>
+              <span class="fw-bold text-success fs-5">$<span class="item-price">{{ product.price }}</span></span>
+              <p class="text-muted mt-1 mb-0 small"><i class="bi bi-box-seam me-1"></i>Stock left: {{ product.stock }}</p>
+            </div>
+            <div class="col-3">
+              <div class="p-3 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between">
+                <div class="mb-2">
+                  <label class="form-label small fw-semibold text-dark d-block mb-1">Quantity</label>
+                  <input type="number" class="form-control form-control-sm quantity-input text-center" value="{{ item.quantity }}" min="1" max="{{ product.stock }}" />
+                </div>
+                <button
+                  hx-post="{% url 'remove_from_cart' product.id %}"
+                  hx-target="#cart-container"
+                  hx-swap="outerHTML"
+                  class="remove-btn w-100 btn btn-danger"
+                  hx-trigger="click"
+                  hx-include="[name=csrfmiddlewaretoken]"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endwith %}
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-danger text-dark">Your cart is currently empty.</div>
+  {% endif %}
+</div>

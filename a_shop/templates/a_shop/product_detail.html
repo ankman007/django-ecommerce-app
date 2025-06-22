@@ -1,64 +1,80 @@
-{% extends 'layouts/blank.html' %} {% block content %}
+{% extends 'layouts/blank.html' %}
+{% block content %}
 <div class="container my-5">
-  <div class="row">
+  <div class="row gy-4">
+    <!-- Left: Product Image -->
     <div class="col-md-6">
       <div
-        style="
-          height: 500px;
-          width: 100%;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
+        class="d-flex align-items-center justify-content-center bg-light rounded"
+        style="height: 500px; overflow: hidden;"
+        aria-label="Product Image"
       >
-        <img
-          src="{{ product.images.first.images.url }}"
-          class="img-fluid rounded"
-          alt="Product Image"
-        />
+        {% if product.images.first %}
+          <img
+            src="{{ product.images.first.images.url }}"
+            alt="{{ product.name }} image"
+            class="img-fluid"
+            style="max-height: 100%; object-fit: contain;"
+          />
+        {% else %}
+          <div class="text-muted fs-5">No image available</div>
+        {% endif %}
       </div>
     </div>
 
-    <div class="col-md-6">
-      <h2 class="mb-3">{{ product.name }}</h2>
-      <p class="text-muted mb-2">{{ product.category }}</p>
-      <h4 class="fw-bold text-success mb-2">${{ product.price }}</h4>
-      <p class="mb-2">
-        <strong>Stock:</strong>
-        <span class="text-secondary">{{ product.stock }}</span>
-      </p>
-      <p class="text-muted small mb-3">
-        <strong>Updated:</strong> {{ product.updated_at|date:"M d, Y" }}
-      </p>
-      <p class="mb-4">{{ product.description }}</p>
+    <!-- Right: Product Info -->
+    <div class="col-md-6 d-flex flex-column justify-content-between">
+      <div>
+        <h2 class="mb-2 fw-semibold">{{ product.name }}</h2>
+        <p class="text-muted mb-3 small text-uppercase">{{ product.category }}</p>
 
-      <div class="mb-3">
-        <label for="quantity" class="form-label">Quantity</label>
-        <input
-          type="number"
-          id="quantity"
-          class="form-control w-25"
-          value="1"
-          min="1"
-        />
+        <h3 class="text-success fw-bold mb-3">${{ product.price }}</h3>
+
+        <p class="mb-2">
+          <strong>Stock:</strong>
+          {% if product.stock > 0 %}
+            <span class="text-success">In Stock</span>
+          {% else %}
+            <span class="text-danger">Out of Stock</span>
+          {% endif %}
+
+        </p>
+        <p class="text-muted small mb-4">
+          <strong>Last updated:</strong> {{ product.updated_at|date:"M d, Y" }}
+        </p>
+
+        <p class="mb-4">{{ product.description }}</p>
       </div>
 
-      {% if product.id in cart_product_ids %}
-      <button class="bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed disabled>Added</button>
-      {% else %}
-      <button type="submit" class="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-4 py-2 rounded-lg">Add to Cart</button>
-      {% endif %}
+      <form method="post" action="{% url 'add_to_cart' product.id %}" class="mb-0">
+        {% csrf_token %}
+        {% if product.id in cart_product_ids %}
+          <button type="button" class="btn btn-secondary w-100" disabled>
+            Added to Cart
+          </button>
+        {% else %}
+          <button type="submit" class="btn btn-primary w-100">
+            Add to Cart
+          </button>
+        {% endif %}
+      </form>
     </div>
   </div>
-  <div class="col-lg-9 mt-4">
-    <h1>Browse Similar Products</h1>
-    <div class="row g-4 mt-4">
-      {% for product in similar_products %}
-        {% include 'a_shop/partials/product_card.html' %}
-      {% endfor %}
+
+  <!-- Similar Products -->
+   <div class="row mt-5 justify-content-center">
+    <div class="col-lg-9">
+      <h3>Browse Similar Products</h3>
+      <div class="row g-4 mt-3">
+        {% for product in similar_products %}
+          {% include 'a_shop/partials/product_card.html' %}
+        {% empty %}
+          <p>No similar products found.</p>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>
-
 {% endblock %}
+
+

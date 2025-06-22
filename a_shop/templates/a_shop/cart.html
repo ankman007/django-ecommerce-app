@@ -1,91 +1,18 @@
-{% extends 'layouts/blank.html' %} {% load static %} {% block content %}
+{% extends 'layouts/blank.html' %}
+{% load static %}
+{% block content %}
 <div class="container my-5">
+  
   <h2 class="mb-4 fw-bold">Your Shopping Cart</h2>
+  
+  <div class="row flex-lg-nowrap align-items-start">
+    <div class="col-lg-8">
+      {% include 'a_shop/partials/cart_items.html' %}
+    </div>
 
-  <form id="cart-form" method="post">
-    {% csrf_token %}
-    <div class="row">
-      <div class="col-lg-8">
-        {% if cart_items %} 
-        {% for item in cart_items %} 
-        {% with item.product as product %}
-
-        <div
-          class="card mb-4 shadow-sm cart-item border-0 rounded-4 px-3 py-3"
-          data-price="{{ product.price }}"
-        >
-          <div class="row g-3 align-items-center">
-            <div class="col-1 d-flex justify-content-center">
-              <input
-                type="checkbox"
-                class="form-check-input item-checkbox mt-1"
-                checked
-              />
-            </div>
-
-            <div class="col-3">
-              <a href="{% url 'product_detail' product.id %}">
-                <img
-                  src="{{ product.images.first.images.url }}"
-                  alt="Product Image"
-                  class="img-fluid rounded-3 shadow-sm"
-                  style="height: 160px; object-fit: cover; width: 100%"
-                />
-              </a>
-            </div>
-
-            <div class="col-5">
-              <a
-                href="{% url 'product_detail' product.id %}"
-                class="text-decoration-none text-dark"
-              >
-                <h5 class="fw-bold mb-1">{{ product.name }}</h5>
-              </a>
-              <p class="text-muted small mb-1">{{ product.category }}</p>
-              <span class="fw-bold text-success fs-5">
-                $<span class="item-price">{{ product.price }}</span>
-              </span>
-              <p class="text-muted mt-1 mb-0 small">
-                <i class="bi bi-box-seam me-1"></i>Stock left: {{ product.stock }}
-              </p>
-            </div>
-
-            <div class="col-3">
-              <div
-                class="p-3 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between"
-              >
-                <div class="mb-2">
-                  <label class="form-label small fw-semibold text-dark d-block mb-1">
-                    Quantity
-                  </label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm quantity-input text-center"
-                    value="{{ item.quantity }}"
-                    min="1"
-                    max="{{ product.stock }}"
-                  />
-                </div>
-                <form action="{% url 'remove_from_cart' product.id %}" method="post">
-                  {% csrf_token %}
-                  <button class="remove-btn w-100 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg">
-                    Remove
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {% endwith %} 
-        {% endfor %} 
-        {% else %}
-        <div class="alert alert-info">Your cart is currently empty. 🛍️</div>
-        {% endif %}
-      </div>
-
-      {% if cart_items %}
-      <div class="col-lg-4 mt-4 mt-lg-0">
+    <div class="col-lg-4 mt-4 mt-lg-0" id="order-summary">
+      <form method="post">
+        {% csrf_token %}
         <div class="card shadow-sm border-0 rounded-4 p-4">
           <h5 class="fw-bold mb-3">Order Summary</h5>
           <div class="d-flex justify-content-between mb-2">
@@ -101,14 +28,18 @@
             <span>Total</span>
             <span>$<span id="total">0.00</span></span>
           </div>
-          <button class="bg-[#3e008d] hover:bg-[#2c006a] text-white font-semibold px-4 py-2 rounded-lg" type="submit">
+          <button
+            id="checkout-button"
+            class="bg-[#3e008d] hover:bg-[#2c006a] text-white font-semibold px-4 py-2 rounded-lg w-100"
+            type="submit"
+            disabled
+          >
             Checkout
           </button>
         </div>
-      </div>
-      {% endif %}
+      </form>
     </div>
-  </form>
+  </div>
 </div>
 
 <style>
@@ -117,43 +48,38 @@
     background-color: #f8f9fa;
     transition: 0.2s ease-in-out;
   }
-
-  .btn-outline-danger {
-    border-radius: 20px;
-  }
-
-  .btn-primary {
-    background-color: #1e0070;
-    border: none;
-    border-radius: 10px;
-  }
-
-  .btn-primary:hover {
-    background-color: #140055;
-  }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const shippingFixed = 10.0;
-
     function calculateTotals() {
       let subtotal = 0;
+      let anyChecked = false;
+
       document.querySelectorAll(".cart-item").forEach((item) => {
         const checkbox = item.querySelector(".item-checkbox");
         const quantityInput = item.querySelector(".quantity-input");
         const price = parseFloat(item.dataset.price);
 
-        if (checkbox.checked) {
+        if (checkbox && checkbox.checked) {
           const quantity = parseInt(quantityInput.value);
           subtotal += price * quantity;
+          anyChecked = true;
         }
       });
 
       document.getElementById("subtotal").textContent = subtotal.toFixed(2);
-      document.getElementById("total").textContent = (
-        subtotal + shippingFixed
-      ).toFixed(2);
+      document.getElementById("total").textContent = (subtotal + shippingFixed).toFixed(2);
+
+      const checkoutBtn = document.getElementById("checkout-button");
+      if (anyChecked) {
+        checkoutBtn.disabled = false;
+        checkoutBtn.classList.remove("opacity-50", "cursor-not-allowed");
+      } else {
+        checkoutBtn.disabled = true;
+        checkoutBtn.classList.add("opacity-50", "cursor-not-allowed");
+      }
     }
 
     calculateTotals();
@@ -163,14 +89,13 @@
       .forEach((el) => {
         el.addEventListener("change", calculateTotals);
       });
+  });
 
-    document.querySelectorAll(".remove-btn").forEach((button) => {
-      button.addEventListener("click", function () {
-        const card = this.closest(".cart-item");
-        card.remove();
-        calculateTotals();
-      });
-    });
+  document.body.addEventListener('htmx:afterSwap', (e) => {
+    if (e.target.id === "cart-container") {
+      const event = new Event("DOMContentLoaded");
+      document.dispatchEvent(event);
+    }
   });
 </script>
 {% endblock %}
