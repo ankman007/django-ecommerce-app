@@ -18,7 +18,7 @@ def cart(request):
         session_cart = request.session.get('cart', {})
         product_ids = session_cart.keys()
         products = Product.objects.filter(id__in=product_ids)
-        quantity_map = {int(pid): qty for pid, qty in session_cart.items()}
+        quantity_map = {pid: qty for pid, qty in session_cart.items()}
         cart_items = [
             {'product': product, 'quantity': quantity_map[product.id]}
             for product in products

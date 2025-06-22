@@ -1,89 +1,176 @@
-{% extends 'layouts/blank.html' %}
-{% load static %}
-{% block content %}
+{% extends 'layouts/blank.html' %} {% load static %} {% block content %}
 <div class="container my-5">
-  <h2 class="mb-4 fw-semibold">Your Shopping Cart</h2>
+  <h2 class="mb-4 fw-bold">Your Shopping Cart</h2>
 
-  <div class="row">
-    <div class="col-lg-8">
-      {% if cart_items %}
-        {% for item in cart_items %}
-          {% with item.product as product %}
-          <div class="card mb-4 shadow-sm">
-            <div class="row g-0 align-items-center p-3">
-              <div class="col-md-3">
-                <div
-                  style="
-                    height: 200px;
-                    width: 100%;
-                    overflow: hidden;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                  "
-                >
-                  <a href="{% url 'product_detail' product.id %}">
-                    <img
-                      src="{{ product.images.first.images.url }}"
-                      class="img-fluid rounded"
-                      alt="Product Image"
-                      style="height: 100%; width: auto; object-fit: cover"
-                    />
-                  </a>
-                </div>
-              </div>
-              <div class="col-md-6 px-3">
-                <a href="{% url 'product_detail' product.id %}">
-                  <h5 class="mb-1 fw-bold">{{ product.name }}</h5>
-                </a>
-                <p class="text-muted mb-1 small">{{ product.category }}</p>
-                <p class="fw-semibold text-success mb-0">${{ product.price }}</p>
-              </div>
-              <div class="col-md-3 text-center">
-                <input
-                  type="number"
-                  class="form-control form-control-sm mb-2"
-                  value="{{ item.quantity }}"
-                  min="1"
+  <form id="cart-form" method="post">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-lg-8">
+        {% if cart_items %} 
+        {% for item in cart_items %} 
+        {% with item.product as product %}
+
+        <div
+          class="card mb-4 shadow-sm cart-item border-0 rounded-4 px-3 py-3"
+          data-price="{{ product.price }}"
+        >
+          <div class="row g-3 align-items-center">
+            <div class="col-1 d-flex justify-content-center">
+              <input
+                type="checkbox"
+                class="form-check-input item-checkbox mt-1"
+                checked
+              />
+            </div>
+
+            <div class="col-3">
+              <a href="{% url 'product_detail' product.id %}">
+                <img
+                  src="{{ product.images.first.images.url }}"
+                  alt="Product Image"
+                  class="img-fluid rounded-3 shadow-sm"
+                  style="height: 160px; object-fit: cover; width: 100%"
                 />
+              </a>
+            </div>
+
+            <div class="col-5">
+              <a
+                href="{% url 'product_detail' product.id %}"
+                class="text-decoration-none text-dark"
+              >
+                <h5 class="fw-bold mb-1">{{ product.name }}</h5>
+              </a>
+              <p class="text-muted small mb-1">{{ product.category }}</p>
+              <span class="fw-bold text-success fs-5">
+                $<span class="item-price">{{ product.price }}</span>
+              </span>
+              <p class="text-muted mt-1 mb-0 small">
+                <i class="bi bi-box-seam me-1"></i>Stock left: {{ product.stock }}
+              </p>
+            </div>
+
+            <div class="col-3">
+              <div
+                class="p-3 rounded-4 border bg-light h-100 d-flex flex-column justify-content-between"
+              >
+                <div class="mb-2">
+                  <label class="form-label small fw-semibold text-dark d-block mb-1">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm quantity-input text-center"
+                    value="{{ item.quantity }}"
+                    min="1"
+                    max="{{ product.stock }}"
+                  />
+                </div>
                 <form action="{% url 'remove_from_cart' product.id %}" method="post">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                  <button class="remove-btn w-100 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg">
+                    Remove
+                  </button>
                 </form>
               </div>
             </div>
           </div>
-          {% endwith %}
-        {% endfor %}
-      {% else %}
-        <div class="alert alert-info">Your cart is empty.</div>
+        </div>
+
+        {% endwith %} 
+        {% endfor %} 
+        {% else %}
+        <div class="alert alert-info">Your cart is currently empty. 🛍️</div>
+        {% endif %}
+      </div>
+
+      {% if cart_items %}
+      <div class="col-lg-4 mt-4 mt-lg-0">
+        <div class="card shadow-sm border-0 rounded-4 p-4">
+          <h5 class="fw-bold mb-3">Order Summary</h5>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal</span>
+            <span>$<span id="subtotal">0.00</span></span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Shipping</span>
+            <span>$<span id="shipping">10.00</span></span>
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between fw-bold fs-5 mb-4">
+            <span>Total</span>
+            <span>$<span id="total">0.00</span></span>
+          </div>
+          <button class="bg-[#3e008d] hover:bg-[#2c006a] text-white font-semibold px-4 py-2 rounded-lg" type="submit">
+            Checkout
+          </button>
+        </div>
+      </div>
       {% endif %}
     </div>
-    {% if cart_items %}
-    <div class="col-lg-4">
-      <div class="card p-4 shadow-sm border-0">
-        <h5 class="mb-3 fw-semibold">Order Summary</h5>
-        <div class="d-flex justify-content-between mb-2">
-          <span>Subtotal</span>
-          <span>
-            ${{ subtotal }}
-          </span>
-        </div>
-        <div class="d-flex justify-content-between mb-2">
-          <span>Shipping</span>
-          <span>${{ shipping_cost }}</span>
-        </div>
-        <hr />
-        <div class="d-flex justify-content-between fw-bold fs-5 mb-4">
-          <span>Total</span>
-          <span>
-            ${{ total }}
-          </span>
-        </div>
-        <button class="btn btn-dark w-100 py-2">Proceed to Checkout</button>
-      </div>
-    </div>
-    {% endif %}
-  </div>
+  </form>
 </div>
+
+<style>
+  .cart-item:hover {
+    border-left: 4px solid #1e0070;
+    background-color: #f8f9fa;
+    transition: 0.2s ease-in-out;
+  }
+
+  .btn-outline-danger {
+    border-radius: 20px;
+  }
+
+  .btn-primary {
+    background-color: #1e0070;
+    border: none;
+    border-radius: 10px;
+  }
+
+  .btn-primary:hover {
+    background-color: #140055;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const shippingFixed = 10.0;
+
+    function calculateTotals() {
+      let subtotal = 0;
+      document.querySelectorAll(".cart-item").forEach((item) => {
+        const checkbox = item.querySelector(".item-checkbox");
+        const quantityInput = item.querySelector(".quantity-input");
+        const price = parseFloat(item.dataset.price);
+
+        if (checkbox.checked) {
+          const quantity = parseInt(quantityInput.value);
+          subtotal += price * quantity;
+        }
+      });
+
+      document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+      document.getElementById("total").textContent = (
+        subtotal + shippingFixed
+      ).toFixed(2);
+    }
+
+    calculateTotals();
+
+    document
+      .querySelectorAll(".item-checkbox, .quantity-input")
+      .forEach((el) => {
+        el.addEventListener("change", calculateTotals);
+      });
+
+    document.querySelectorAll(".remove-btn").forEach((button) => {
+      button.addEventListener("click", function () {
+        const card = this.closest(".cart-item");
+        card.remove();
+        calculateTotals();
+      });
+    });
+  });
+</script>
 {% endblock %}

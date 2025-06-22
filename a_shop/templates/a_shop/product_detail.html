@@ -45,9 +45,9 @@
       </div>
 
       {% if product.id in cart_product_ids %}
-      <button class="btn btn-success w-100" disabled>Added</button>
+      <button class="bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed disabled>Added</button>
       {% else %}
-      <button type="submit" class="btn btn-dark w-100">Add to Cart</button>
+      <button type="submit" class="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-4 py-2 rounded-lg">Add to Cart</button>
       {% endif %}
     </div>
   </div>
