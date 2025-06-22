@@ -67,7 +67,11 @@
         </div>
 
         <div id="add-to-cart-btn-{{ product.id }}">
+          {% if product.id in cart_product_ids %}
+          <button class="btn btn-success w-100" disabled>Added</button>
+          {% else %}
           <button type="submit" class="btn btn-dark w-100">Add to Cart</button>
+          {% endif %}
         </div>
       </form>
     </div>

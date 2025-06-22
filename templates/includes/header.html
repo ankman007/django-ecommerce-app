@@ -47,6 +47,9 @@
         </div>
       </li>
 
+      {% else %}
+        <li><a href="{% url 'account_login' %}">Login</a></li>
+        <li><a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">Signup</a></li>
       {% endif %}
       <li class="nav-item">
         <a class="nav-link position-relative" href="{% url 'cart' %}">

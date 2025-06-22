@@ -16,5 +16,7 @@ urlpatterns = [
     
     path('cart/', cart.cart, name='cart'),
     path('add-to-cart/<str:product_id>/', cart.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<str:product_id>/', cart.remove_from_cart, name='remove_from_cart'),
+
 ]
 

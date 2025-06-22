@@ -44,7 +44,11 @@
         />
       </div>
 
-      <button class="btn btn-dark btn-lg me-2">Add to Cart</button>
+      {% if product.id in cart_product_ids %}
+      <button class="btn btn-success w-100" disabled>Added</button>
+      {% else %}
+      <button type="submit" class="btn btn-dark w-100">Add to Cart</button>
+      {% endif %}
     </div>
   </div>
   <div class="col-lg-9 mt-4">
