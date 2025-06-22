@@ -16,6 +16,7 @@
       rel="stylesheet"
     />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
     <script
@@ -155,6 +156,7 @@
     {% block layout %} {% endblock %} {% block javascript %}{% endblock %}
   </main>
     {% include 'includes/footer.html' %}
+    <div id="toast-container" class="toast-container"></div>
   </body>
   
 </html>

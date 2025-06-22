@@ -5,7 +5,6 @@ from django.conf import settings
 from a_users.views import profile_view
 
 urlpatterns = [
-    path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('', include('a_shop.urls')),
     path('accounts/', include('allauth.urls')),
