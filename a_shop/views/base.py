@@ -7,6 +7,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
 from django.contrib import messages
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 
 def home(request):
     products = Product.objects.all()
@@ -35,6 +38,10 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
+            BASE_DIR = Path(__file__).resolve().parent.parent
+            load_dotenv(os.path.join(BASE_DIR, '.env'))
+            RECIPIENT_EMAIL  = os.getenv('RECIPIENT_EMAIL')
+            
             subject = f"New contact us message from {form.cleaned_data['name']}"
             message = form.cleaned_data['message']
             sender_email = form.cleaned_data['email']
@@ -44,7 +51,7 @@ def contact(request):
                 subject,
                 full_message,
                 settings.DEFAULT_FROM_EMAIL,
-                ['aonealbanywholesale@gmail.com'],
+                RECIPIENT_EMAIL,
                 fail_silently=False,
             )
             toast_message = "Your message has been sent successfully! <a href='/contact/' class='underline'>Send another?</a>"

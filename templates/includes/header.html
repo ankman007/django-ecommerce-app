@@ -8,7 +8,137 @@
       <span class="text-lg font-bold">A One Albany Wholesale</span>
     </a>
   </div>
-  <nav class="block relative">
+
+  <div class="md:hidden" x-data="{ open: false }">
+    <button
+      @click="open = !open"
+      class="focus:outline-none"
+      aria-label="Toggle menu"
+    >
+      <svg
+        x-show="!open"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-8 w-8"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg
+        x-show="open"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-8 w-8"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <nav
+      x-show="open"
+      @click.away="open = false"
+      class="absolute right-0 mt-2 w-64 bg-gray-800 text-white rounded-md shadow-lg p-4 space-y-4 z-50"
+      style="display: none;"
+    >
+      <ul class="flex flex-col space-y-3">
+        {% if request.user.is_authenticated %}
+        <li x-data="{ dropdownOpen: false }" class="relative">
+          <a
+            @click="dropdownOpen = !dropdownOpen"
+            @click.away="dropdownOpen = false"
+            class="cursor-pointer select-none flex items-center gap-2"
+          >
+            <img
+              class="h-8 w-8 rounded-full object-cover"
+              src="{{ request.user.profile.avatar }}"
+              alt="Avatar"
+            />
+            {{ request.user.profile.name }}
+            <img
+              x-bind:class="dropdownOpen && 'rotate-180 duration-300'"
+              class="w-4"
+              src="https://img.icons8.com/small/32/ffffff/expand-arrow.png"
+              alt="Dropdown"
+            />
+          </a>
+          <div
+            x-show="dropdownOpen"
+            x-cloak
+            class="bg-white text-black shadow rounded-lg w-full p-2 mt-2 z-20"
+            x-transition:enter="duration-300 ease-out"
+            x-transition:enter-start="opacity-0 -translate-y-5 scale-90"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+          >
+            <ul class="hoverlist [&>li>a]:justify-end">
+              <li><a href="{% url 'profile' %}">My Profile</a></li>
+              <li><a href="{% url 'profile-edit' %}">Edit Profile</a></li>
+              <li><a href="{% url 'profile-settings' %}">Settings</a></li>
+              <li><a href="{% url 'account_logout' %}">Log Out</a></li>
+            </ul>
+          </div>
+        </li>
+        {% else %}
+        <li><a href="{% url 'account_login' %}">Login</a></li>
+        <li>
+          <a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">Signup</a>
+        </li>
+        {% endif %}
+        <li>
+          <a href="{% url 'cart' %}" class="flex items-center gap-2">
+            <i class="bi bi-cart-fill fs-5"></i>
+            Cart
+            <span
+              id="cart-count"
+              class="badge rounded-pill bg-danger ml-auto"
+            >
+              {{ cart_count }}
+            </span>
+          </a>
+        </li>
+        <li>
+          <form
+            action="{% url 'product-search' %}"
+            method="get"
+            class="flex items-center bg-gray-700 text-white rounded-md overflow-hidden h-10 w-full"
+          >
+            <input
+              type="text"
+              name="q"
+              placeholder="Search products..."
+              class="bg-transparent px-4 py-2 w-full placeholder-gray-300 text-white focus:outline-none"
+              required
+            />
+            <button
+              type="submit"
+              class="px-4 bg-gray-600 hover:bg-gray-500 transition"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
+                />
+              </svg>
+            </button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <nav class="hidden md:block relative">
     <ul class="navitems flex items-center justify-center h-full space-x-4">
       {% if request.user.is_authenticated %}
       <li x-data="{ dropdownOpen: false }" class="relative">
@@ -48,8 +178,8 @@
       </li>
 
       {% else %}
-        <li><a href="{% url 'account_login' %}">Login</a></li>
-        <li><a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">Signup</a></li>
+      <li><a href="{% url 'account_login' %}">Login</a></li>
+      <li><a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">Signup</a></li>
       {% endif %}
       <li class="nav-item">
         <a class="nav-link position-relative" href="{% url 'cart' %}">
@@ -98,30 +228,31 @@
       </li>
     </ul>
   </nav>
-  <script>
-  document.body.addEventListener("htmx:afterSwap", function (event) {
-    if (
-      event.detail &&
-      event.detail.xhr &&
-      event.detail.xhr.responseType === "" || event.detail.xhr.responseType === "text"
-    ) {
-      try {
-        const data = JSON.parse(event.detail.xhr.responseText);
-        if (data.cart_count_html) {
-          document.querySelector("#cart-count").outerHTML = data.cart_count_html;
-        }
-        if (data.button_html && event.target.closest("form")) {
-          const form = event.target.closest("form");
-          const targetDiv = form.querySelector('[id^="add-to-cart-btn-"]');
-          if (targetDiv) {
-            targetDiv.outerHTML = data.button_html;
-          }
-        }
-      } catch (e) {
-        console.error("Cart count update failed:", e);
-      }
-    }
-  });
-</script>
 
+  <script>
+    document.body.addEventListener("htmx:afterSwap", function (event) {
+      if (
+        event.detail &&
+        event.detail.xhr &&
+        (event.detail.xhr.responseType === "" ||
+          event.detail.xhr.responseType === "text")
+      ) {
+        try {
+          const data = JSON.parse(event.detail.xhr.responseText);
+          if (data.cart_count_html) {
+            document.querySelector("#cart-count").outerHTML = data.cart_count_html;
+          }
+          if (data.button_html && event.target.closest("form")) {
+            const form = event.target.closest("form");
+            const targetDiv = form.querySelector('[id^="add-to-cart-btn-"]');
+            if (targetDiv) {
+              targetDiv.outerHTML = data.button_html;
+            }
+          }
+        } catch (e) {
+          console.error("Cart count update failed:", e);
+        }
+      }
+    });
+  </script>
 </header>
