@@ -1,30 +1,65 @@
-{% extends 'layouts/blank.html' %}
+{% extends 'layouts/blank.html' %} {% block content %} {% load static %}
 
-{% block content %}
-{% load static %}
+<section class="max-w-4xl mx-auto mt-16 bg-white p-10 shadow-md rounded-lg">
+  <h1 class="text-3xl font-bold mb-8 text-center">About Us</h1>
 
-<section class="max-w-4xl mx-auto mt-16 bg-white p-8 shadow-md rounded-lg">
-  <h1 class="text-3xl font-bold mb-6 text-center">About Us</h1>
-  <p class="mb-4">
-    Welcome to <strong>A One Albany Wholesale Convenience Store & Gas Station Supply</strong>, your trusted source for wholesale convenience store and gas station supplies in Albany, New York. We are committed to providing high-quality products with reliability, affordability, and excellent customer service.
+  <p class="mb-6 leading-relaxed">
+    Welcome to
+    <strong
+      >A One Albany Wholesale Convenience Store & Gas Station Supply</strong
+    >, your trusted source for wholesale convenience store and gas station
+    supplies in Albany, New York. We are committed to providing high-quality
+    products with reliability, affordability, and excellent customer service.
   </p>
-  <p class="mb-4">
-    Located at 87 Central Avenue, Albany, NY 12206, our store proudly serves local retailers and businesses with a wide range of wholesale goods tailored for convenience stores and gas stations.
+
+  <p class="mb-6 leading-relaxed">
+    Located at 87 Central Avenue, Albany, NY 12206, our store proudly serves
+    local retailers and businesses with a wide range of wholesale goods tailored
+    for convenience stores and gas stations.
   </p>
-  <p class="mb-4">
-    Our business was founded by <strong>Binesh Hada</strong>, a dedicated entrepreneur with a passion for serving the community. With a focus on trust and long-term relationships, Mr. Hada has built a reputation for integrity and personal attention to customer needs.
+
+  <p class="mb-6 leading-relaxed">
+    Our business was founded by <strong>Binesh Hada</strong>, a dedicated
+    entrepreneur with a passion for serving the community. With a focus on trust
+    and long-term relationships, Mr. Hada has built a reputation for integrity
+    and personal attention to customer needs.
   </p>
-  <p class="mb-4">
-    If you have any questions, need assistance, or want to place an order, feel free to reach out to us:
+
+  <p class="mb-6 leading-relaxed">
+    If you have any questions, need assistance, or want to place an order, feel
+    free to reach out to us:
   </p>
-  <ul class="list-disc list-inside mb-4 text-gray-700">
+
+  <ul class="list-disc list-inside mb-8 text-gray-700 space-y-2">
     <li><strong>Phone:</strong> 518-599-503 or 518-971-4066</li>
     <li><strong>Owner (Binesh Hada):</strong> 941-312-3186</li>
-    <li><strong>Email:</strong> <a href="mailto:hadabinesh1@gmail.com" class="text-blue-600 hover:underline">hadabinesh1@gmail.com</a></li>
+    <li>
+      <strong>Email:</strong>
+      <a
+        href="mailto:hadabinesh1@gmail.com"
+        class="text-blue-600 hover:underline"
+        >hadabinesh1@gmail.com</a
+      >
+    </li>
   </ul>
-  <p>
-    Thank you for choosing us as your wholesale partner. We look forward to doing business with you. If you have any questions or comments, please don’t hesitate to
-    <a href="{% url 'contact' %}" class="text-blue-600 hover:underline">contact us</a>.
+
+  <p class="mb-10 leading-relaxed">
+    Thank you for choosing us as your wholesale partner. We look forward to
+    doing business with you. If you have any questions or comments, please don’t
+    hesitate to
+    <a href="{% url 'contact' %}" class="text-blue-600 hover:underline"
+      >contact us</a
+    >.
   </p>
+
+  <div class="w-full rounded-md overflow-hidden shadow-lg">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d295.02600105485317!2d-73.76623207234722!3d42.65937478615455!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89de0a36ea315555%3A0x60c58834dde7039c!2sA%20ONE%20ALBANY%20DISCOUNT%20STORE!5e0!3m2!1sen!2snp!4v1750766734749!5m2!1sen!2snp"
+      class="w-full h-96 border-0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </div>
 </section>
 {% endblock %}
