@@ -10,7 +10,6 @@ from .models import (
     Payment,
 )
 
-# Use CKEditor for rich product descriptions
 class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product

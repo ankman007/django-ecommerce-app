@@ -152,11 +152,17 @@
     class="min-h-screen min-h-screen flex flex-col {% block class %}{% endblock %}"
   >
   <main class="flex-grow">
-    {% include 'includes/messages.html' %} {% include 'includes/header.html' %}
+    {% include 'includes/header.html' %}
     {% block layout %} {% endblock %} {% block javascript %}{% endblock %}
   </main>
     {% include 'includes/footer.html' %}
-    <div id="toast-container" class="toast-container"></div>
+    {% if messages %}
+      {% for message in messages %}
+          <div id="toast-container" class="toast-container"></div>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
   </body>
   
 </html>

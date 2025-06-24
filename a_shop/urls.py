@@ -6,6 +6,8 @@ from .views import base, cart, category, product
 urlpatterns = [
     path('', base.home, name='home'),
     path('contact/', base.contact, name='contact'),
+    path('contact/success/', base.contact_success, name='contact_success'),
+
     path('about/', base.about, name='about'),
     path('privacy-policy/', base.privacy_policy, name='privacy_policy'),
     

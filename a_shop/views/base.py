@@ -1,6 +1,12 @@
 from a_shop.models import Product, Category, Cart
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.db.models import Count
+from a_shop.forms import ContactForm
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import HttpResponse
+from django.contrib import messages
 
 def home(request):
     products = Product.objects.all()
@@ -26,7 +32,33 @@ def home(request):
 
 
 def contact(request):
-    return render(request, 'a_shop/contact.html')
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = f"New contact us message from {form.cleaned_data['name']}"
+            message = form.cleaned_data['message']
+            sender_email = form.cleaned_data['email']
+            full_message = f"From: {form.cleaned_data['name']} <{sender_email}>\n\n{message}"
+            
+            send_mail(
+                subject,
+                full_message,
+                settings.DEFAULT_FROM_EMAIL,
+                ['aonealbanywholesale@gmail.com'],
+                fail_silently=False,
+            )
+            toast_message = "Your message has been sent successfully! <a href='/contact/' class='underline'>Send another?</a>"
+            toast_html = render_to_string("a_shop/partials/toast.html", {"message": toast_message})
+            messages.success(request, toast_html)
+            return redirect('home')
+    else:
+        form = ContactForm()
+
+    return render(request, 'a_shop/contact.html', {'form': form})
+
+
+def contact_success(request):
+    return HttpResponse("Thanks for contacting us!")
 
 
 def about(request):
