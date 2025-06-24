@@ -163,6 +163,27 @@
         </div>
       {% endfor %}
     {% endif %}
+    <button
+      id="backToTopBtn"
+      class="fixed bottom-8 right-8 hidden w-12 h-12 flex items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 transition"
+      aria-label="Back to top"
+    >
+      <i class="bi bi-arrow-up-short text-3xl"></i>
+    </button>
   </body>
-  
+  <script>
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.remove("hidden");
+      } else {
+        backToTopBtn.classList.add("hidden");
+      }
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
 </html>

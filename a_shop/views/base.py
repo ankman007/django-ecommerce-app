@@ -51,7 +51,7 @@ def contact(request):
                 subject,
                 full_message,
                 settings.DEFAULT_FROM_EMAIL,
-                RECIPIENT_EMAIL,
+                [RECIPIENT_EMAIL],
                 fail_silently=False,
             )
             toast_message = "Your message has been sent successfully! <a href='/contact/' class='underline'>Send another?</a>"
