@@ -4,6 +4,9 @@ from django.utils.text import slugify
 from decimal import Decimal
 from .utils import generate_short_uuid
 from ckeditor.fields import RichTextField
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=200)
@@ -54,7 +57,25 @@ class ProductImage(models.Model):
     def save(self, *args, **kwargs):
         if not self.alt_text:
             self.alt_text = slugify(self.product.name)
+
+        if self.images and not self.pk or self.has_changed_image():
+            img = Image.open(self.images)
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            max_size = (1200, 1200)
+            img.thumbnail(max_size, Image.Resampling.LANCZOS)
+            output = BytesIO()
+            img.save(output, format='JPEG', quality=75)
+            output.seek(0)
+            self.images = ContentFile(output.read(), self.images.name)
         super().save(*args, **kwargs)
+
+    def has_changed_image(self):
+        """Check if image was updated to avoid double compression"""
+        if not self.pk:
+            return True
+        old = ProductImage.objects.get(pk=self.pk)
+        return old.images != self.images
 
 
 class Cart(models.Model):

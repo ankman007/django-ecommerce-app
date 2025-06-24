@@ -3,39 +3,72 @@
 <div class="container my-5">
   <div class="row gy-4">
     <div class="col-md-6">
-      <div
-        class="d-flex align-items-center justify-content-center bg-light rounded"
-        style="height: 500px; overflow: hidden;"
-        aria-label="Product Image"
-      >
-        {% if product.images.first %}
-          <img
-            src="{{ product.images.first.images.url }}"
-            alt="{{ product.name }} image"
-            class="img-fluid"
-            style="max-height: 100%; object-fit: contain;"
-          />
+      {% with images=product.images.all %}
+        {% if images %}
+          <div class="position-relative bg-light rounded mb-3 d-flex align-items-center justify-content-center"
+            style="height: 500px; overflow: hidden"
+            aria-label="Product Image">
+
+            {% if images|length > 1 %}
+              <button
+                type="button"
+                class="position-absolute start-0 top-50 translate-middle-y"
+                onclick="changeImage(-1)"
+                style="background: none; border: none; color: black; font-size: 2rem; z-index: 10;"
+                aria-label="Previous Image">
+                &lsaquo;
+              </button>
+            {% endif %}
+
+            <img
+              id="main-product-image"
+              src="{{ images.0.images.url }}"
+              alt="{{ product.name }} image"
+              class="img-fluid"
+              loading="lazy"
+              style="max-height: 100%; object-fit: contain; transition: opacity 0.3s ease;" />
+
+            {% if images|length > 1 %}
+              <button
+                type="button"
+                class="position-absolute end-0 top-50 translate-middle-y"
+                onclick="changeImage(1)"
+                style="background: none; border: none; color: black; font-size: 2rem; z-index: 10;"
+                aria-label="Next Image">
+                &rsaquo;
+              </button>
+            {% endif %}
+          </div>
+
+          {% if images|length > 1 %}
+            <div class="d-flex flex-wrap gap-2">
+              {% for image in images %}
+                <img
+                  src="{{ image.images.url }}"
+                  alt="{{ product.name }} thumbnail"
+                  loading="lazy"
+                  class="img-thumbnail"
+                  style="height: 80px; width: 80px; object-fit: cover; cursor: pointer;"
+                  onclick="showImageAtIndex({{ forloop.counter0 }})" />
+              {% endfor %}
+            </div>
+          {% endif %}
         {% else %}
-          <div class="text-muted fs-5">No image available</div>
+          <div class="d-flex align-items-center justify-content-center bg-light rounded mb-3" style="height: 500px">
+            <div class="text-muted fs-5">No image available</div>
+          </div>
         {% endif %}
-      </div>
+      {% endwith %}
     </div>
 
     <div class="col-md-6 d-flex flex-column justify-content-between">
       <div>
         <h2 class="mb-2 fw-semibold">{{ product.name }}</h2>
         <p class="text-muted mb-3 small text-uppercase">{{ product.category }}</p>
-
         <h3 class="text-success fw-bold mb-3">${{ product.price }}</h3>
 
         <p class="mb-2">
-          <strong>Stock:</strong>
-          {% if product.stock > 0 %}
-            <span class="text-success">In Stock</span>
-          {% else %}
-            <span class="text-danger">Out of Stock</span>
-          {% endif %}
-
+          <i class="bi bi-box-seam me-1"></i>Stock left: {{ product.stock }}
         </p>
         <p class="text-muted small mb-4">
           <strong>Last updated:</strong> {{ product.updated_at|date:"M d, Y" }}
@@ -48,11 +81,9 @@
         hx-post="{% url 'add_to_cart' product.id %}"
         hx-target="#add-to-cart-btn-{{ product.id }}"
         hx-swap="outerHTML"
-        class="mt-auto w-100"
-      >
+        class="mt-auto w-100">
         {% csrf_token %}
         <input type="hidden" name="quantity" value="1" />
-
         <div id="add-to-cart-btn-{{ product.id }}">
           {% if product.id in cart_product_ids %}
             <button class="btn btn-success w-100" disabled>Added</button>
@@ -64,7 +95,7 @@
     </div>
   </div>
 
-   <div class="row mt-5 justify-content-center">
+  <div class="row mt-5 justify-content-center">
     <div class="col-lg-9">
       <h3>Browse Similar Products</h3>
       <div class="row g-4 mt-3">
@@ -77,6 +108,29 @@
     </div>
   </div>
 </div>
+
+{% with images=product.images.all %}
+{% if images|length > 1 %}
+<script>
+  const imageUrls = [{% for image in images %}"{{ image.images.url }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+  let currentIndex = 0;
+  const mainImage = document.getElementById("main-product-image");
+
+  function showImageAtIndex(index) {
+    if (!mainImage) return;
+    currentIndex = index;
+    mainImage.style.opacity = 0.3;
+    setTimeout(() => {
+      mainImage.src = imageUrls[currentIndex];
+      mainImage.style.opacity = 1;
+    }, 150);
+  }
+
+  function changeImage(direction) {
+    currentIndex = (currentIndex + direction + imageUrls.length) % imageUrls.length;
+    showImageAtIndex(currentIndex);
+  }
+</script>
+{% endif %}
+{% endwith %}
 {% endblock %}
-
-
