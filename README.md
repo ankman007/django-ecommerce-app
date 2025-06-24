@@ -12,7 +12,8 @@ Django-based ecommerce store leveraging HTMX for dynamic frontend updates withou
 ## To set up this project
 
 1. cd into project directory
-2. Install dependencies through command `pip install -r requirements.txt`
-3. Apply migrations `python manage.py migrate`
-4. Run the server `python manage.py runserver`
-5. Project should be live at localhost port 8000.
+2. Create a new .env file by copying the env.example file
+3. Open the .env file and update it with your credentials as needed
+4. Build docker image with `docker-compose build`
+5. Start container with `docker-compose up`
+6. Project should be live at localhost port 8000.
