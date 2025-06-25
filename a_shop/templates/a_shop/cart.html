@@ -14,8 +14,6 @@
     </div>
 
     <div class="col-lg-4 mt-4 mt-lg-0" id="order-summary">
-      <form method="post">
-        {% csrf_token %}
         <div
           class="card rounded-4 p-4 hover-shadow"
           style="background-color: #f9f9f9; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); transition: box-shadow 0.3s ease;"
@@ -38,15 +36,29 @@
             <span>Total</span>
             <span>$<span id="total">0.00</span></span>
           </div>
-
-          <button
-            id="checkout-button"
-            class="bg-[#3e008d] hover:bg-[#2c006a] text-white font-semibold px-4 py-2 rounded-lg w-100"
-            type="submit"
-            disabled
-          >
-            Checkout
-          </button>
+          {% if user.is_authenticated %}
+          <form action="{% url 'checkout' %}" method="POST">
+            {% csrf_token %}
+             {% for item in cart_items %}
+              <input type="hidden" name="items_name" value="{{ item.product.name }}">
+              <input type="hidden" name="items_price" value="{{ item.product.price }}">
+              <input type="hidden" name="items_quantity" value="{{ item.quantity }}">
+            {% endfor %}
+            <button
+              id="checkout-button"
+              class="bg-[#3e008d] hover:bg-[#2c006a] text-white font-semibold px-4 py-2 rounded-lg w-100"
+              type="submit"
+              disabled
+            >
+              Checkout
+            </button>
+          </form>
+          {% else %}
+            <a href="{% url 'account_login' %}?next={% url 'checkout' %}" 
+              class="bg-[#3e008d] hover:bg-[#2c006a] text-white font-semibold px-4 py-2 rounded-lg w-100 inline-block text-center">
+              Login to Checkout
+            </a>
+          {% endif %}
         </div>
       </form>
     </div>

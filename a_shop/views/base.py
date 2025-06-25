@@ -1,12 +1,12 @@
 from a_shop.models import Product, Category, Cart
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.contrib import messages
 from django.db.models import Count
 from a_shop.forms import ContactForm
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
-from django.contrib import messages
 import os
 from dotenv import load_dotenv
 from pathlib import Path

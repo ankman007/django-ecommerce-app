@@ -68,7 +68,12 @@
         <h3 class="text-success fw-bold mb-3">${{ product.price }}</h3>
 
         <p class="mb-2">
-          <i class="bi bi-box-seam me-1"></i>Stock left: {{ product.stock }}
+          <i class="bi bi-box-seam me-1"></i>
+          {% if product.stock == 0 %}
+          Out of stock
+          {% else %}
+          Stock left: {{ product.stock }}
+          {% endif %}
         </p>
         <p class="text-muted small mb-4">
           <strong>Last updated:</strong> {{ product.updated_at|date:"M d, Y" }}
@@ -88,7 +93,13 @@
           {% if product.id in cart_product_ids %}
             <button class="btn btn-success w-100" disabled>Added</button>
           {% else %}
-            <button type="submit" class="btn btn-dark w-100">Add to Cart</button>
+            <button
+              type="submit"
+              class="btn btn-dark w-100"
+              {% if product.stock == 0 %} disabled aria-disabled="true" title="Out of stock" {% endif %}
+            >
+              Add to Cart
+            </button>
           {% endif %}
         </div>
       </form>

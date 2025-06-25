@@ -6,6 +6,7 @@ from .utils import generate_short_uuid
 from ckeditor.fields import RichTextField
 from PIL import Image
 from io import BytesIO
+import re
 from django.core.files.base import ContentFile
 
 class Category(models.Model):
@@ -40,6 +41,10 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     updated_at = models.DateTimeField(auto_now=True)
     stock = models.PositiveIntegerField(default=0)
+    
+    def save(self, *args, **kwargs):
+        self.description = re.sub(r'&nbsp;|<p>|</p>', ' ', self.description).strip()
+        super().save(*args, **kwargs)
     
     def __str__(self):
         category_name = self.category.name if self.category else "Uncategorized"
