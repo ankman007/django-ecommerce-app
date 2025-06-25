@@ -1,0 +1,52 @@
+{% extends 'layouts/blank.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .hover-shadow:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12) !important;
+  }
+  .cart-item:hover {
+    border-left: 4px solid #1e0070;
+    background-color: #f8f9fa;
+    transition: 0.2s ease-in-out;
+  }
+</style>
+
+<div class="container my-5">
+  <h2 class="mb-4 fw-bold">Your Orders</h2>
+  <div class="row flex-lg-nowrap align-items-start">
+    <div class="col-lg-8">
+      <div id="cart-container">
+        {% if orders %}
+  {% for order in orders %}
+    <h4 class="mb-3">Order #{{ order.id }} - {{ order.created_at|date:"M d, Y" }}</h4>
+    {% for item in order.items.all %}
+      <div class="card p-3 mb-3">
+        <div class="row align-items-center">
+          <div class="col-3">
+            {% if item.product.images.first %}
+              <img src="{{ item.product.images.first.images.url }}" class="img-fluid rounded" />
+            {% else %}
+              <div class="bg-light text-center p-4">No image</div>
+            {% endif %}
+          </div>
+          <div class="col-9">
+            <h5 class="fw-bold">{{ item.product.name }}</h5>
+            <p class="mb-1">Qty: {{ item.quantity }}</p>
+            <p class="mb-1">Price: ${{ item.price }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endfor %}
+{% else %}
+  <div class="alert alert-danger">You have no previous orders.</div>
+{% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

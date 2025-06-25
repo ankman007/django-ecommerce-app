@@ -5,8 +5,10 @@ import stripe
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib import messages
+from a_shop.models import Order, OrderItem, Product, Cart
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
 
 def create_checkout_session(request):
     if request.method == "POST":
@@ -18,8 +20,11 @@ def create_checkout_session(request):
             return HttpResponseBadRequest("Missing form data")
 
         line_items = []
+        cart = {}
+
         for name, price, quantity in zip(item_names, item_prices, item_quantities):
             try:
+                product = Product.objects.get(name=name)
                 line_items.append({
                     'price_data': {
                         'currency': 'usd',
@@ -30,8 +35,15 @@ def create_checkout_session(request):
                     },
                     'quantity': int(quantity),
                 })
-            except ValueError:
-                return HttpResponseBadRequest("Invalid price or quantity")
+                cart[str(product.id)] = {
+                    'quantity': int(quantity),
+                    'price': float(price),
+                }
+            except (Product.DoesNotExist, ValueError):
+                return HttpResponseBadRequest("Invalid product or data")
+
+        request.session['cart'] = cart
+        request.session.modified = True
 
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -46,7 +58,39 @@ def create_checkout_session(request):
 
 
 def success(request):
-    toast_message = "Payment successful!"
+    cart = request.session.get('cart', {})
+
+    if not cart:
+        messages.error(request, "🛒 Cart is empty or expired.")
+        return redirect('home')
+
+    user = request.user if request.user.is_authenticated else None
+    order = Order.objects.create(user=user, paid=True)
+
+    for product_id, item in cart.items():
+        try:
+            product = Product.objects.get(pk=product_id)
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                quantity=item['quantity'],
+                price=item['price']
+            )
+        except Product.DoesNotExist:
+            continue
+
+    if 'cart' in request.session:
+        del request.session['cart']
+        request.session.modified = True
+
+    if request.user.is_authenticated:
+        try:
+            user_cart = Cart.objects.get(user=request.user)
+            user_cart.items.all().delete()
+        except Cart.DoesNotExist:
+            pass
+
+    toast_message = "✅ Payment successful! Your order has been placed."
     toast_html = render_to_string("a_shop/partials/toast.html", {"message": toast_message})
     messages.success(request, toast_html)
     return redirect('home')

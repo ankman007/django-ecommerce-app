@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import base, cart, category, product, payment
+from .views import base, cart, category, product, payment, order
 
 
 urlpatterns = [
@@ -23,5 +23,7 @@ urlpatterns = [
     path('create-checkout-session/', payment.create_checkout_session, name='checkout'),
     path('success/', payment.success, name='success'),
     path('cancel/', payment.cancel, name='cancel'),
+    
+    path('orders/', order.order, name='orders'),
 ]
 
