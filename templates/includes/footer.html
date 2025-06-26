@@ -1,67 +1,101 @@
 {% load static %}
-
-<footer class="bg-gray-800 text-white px-6 py-6 w-full">
+<footer class="bg-gray-800 text-white pt-6">
   <div
-    class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0"
+    class="text-white text-center py-3 px-6"
+    style="background-color: rgb(79, 70, 229)"
   >
-    <div class="w-full md:w-1/2 text-gray-300 space-y-3 text-center md:text-left">
-      <div class="text-2xl font-bold text-white">A One Albany Wholesale</div>
-      <p class="text-base">Convenience Store & Gas Station Supply</p>
-    </div>
+    <span class="mr-4">Get connected with us on social networks:</span>
+    <span class="inline-flex space-x-4">
+      <a href="#" class="hover:text-gray-200"
+        ><i class="fab fa-facebook-f"></i
+      ></a>
+      <a href="#" class="hover:text-gray-200"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="hover:text-gray-200"
+        ><i class="fab fa-instagram"></i
+      ></a>
+      <a href="#" class="hover:text-gray-200"
+        ><i class="fab fa-linkedin-in"></i
+      ></a>
+    </span>
+  </div>
 
+  <div class="container mx-auto px-4 py-6">
     <div
-      class="w-full md:w-1/2 flex flex-col md:flex-row justify-center md:justify-end md:gap-16 gap-8 text-sm text-gray-300"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-gray-300"
     >
-      <div class="space-y-2 leading-relaxed text-center md:text-right">
-        <p>Address: 87 Central Avenue, Albany, NY 12206</p>
-        <p>Phone: 518-599-503 / 518-971-4066</p>
-        <p>Owner: Binesh Hada (941-312-3186)</p>
-        <p>
-          Email:
-          <a
-            href="mailto:hadabinesh1@gmail.com"
-            class="underline hover:text-gray-200"
-            >hadabinesh1@gmail.com</a
-          >
-        </p>
+      <div>
+        <a class="flex items-center gap-2" href="/">
+          <img class="h-6" src="{% static 'images/logo.svg' %}" alt="Logo" />
+          <span class="text-lg font-bold">A One Albany Wholesale</span>
+        </a>
       </div>
 
-      <div class="text-center md:text-right">
-        <nav>
-          <ul class="flex flex-col gap-2">
-            <li>
-              <a href="/" class="hover:text-gray-300 transition duration-200"
-                >Home</a
-              >
-            </li>
-            <li>
-              <a
-                href="{% url 'contact' %}"
-                class="hover:text-gray-300 transition duration-200"
-                >Contact</a
-              >
-            </li>
-            <li>
-              <a
-                href="{% url 'about' %}"
-                class="hover:text-gray-300 transition duration-200"
-                >About Us</a
-              >
-            </li>
-            <li>
-              <a
-                href="{% url 'privacy_policy' %}"
-                class="hover:text-gray-300 transition duration-200"
-                >Privacy Policy</a
-              >
-            </li>
-          </ul>
-        </nav>
+      <div>
+        <h6 class="uppercase font-semibold mb-2">Categories</h6>
+        <ul class="space-y-1">
+          {% for cat in categories|slice:":4" %}
+          <li>
+            <a href="{% url 'category' cat.slug %}" class="hover:underline">
+              {{ cat.name }}
+            </a>
+          </li>
+          {% empty %}
+          <li>No categories found.</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <!-- Useful Links -->
+      <div>
+        <h6 class="uppercase font-semibold mb-2">menu</h6>
+        <ul class="space-y-1">
+          <li><a href="/" class="hover:underline">Home</a></li>
+          <li>
+            <a href="{% url 'about' %}" class="hover:underline">About Us</a>
+          </li>
+          <li>
+            <a href="{% url 'contact' %}" class="hover:underline">Contact</a>
+          </li>
+          <li>
+            <a href="{% url 'privacy_policy' %}" class="hover:underline"
+              >Privacy Policy</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h6 class="uppercase font-semibold mb-2">
+          <a
+            href="{% url 'contact' %}"
+            class="hover:underline uppercase font-semibold mb-2"
+            >Contact</a
+          >
+        </h6>
+        <ul class="space-y-1 text-sm">
+          <li class="flex items-start">
+            <i class="fas fa-home mr-2 mt-1"></i> 87 Central Avenue, Albany, NY
+            12206
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-envelope mr-2 mt-1"></i>
+            <a href="mailto:hadabinesh1@gmail.com" class="hover:underline"
+              >hadabinesh1@gmail.com</a
+            >
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-phone mr-2 mt-1"></i> 518-599-503 / 518-971-4066
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-user mr-2 mt-1"></i> Binesh Hada (941-312-3186)
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 
-  <div class="mt-6 text-center text-xs text-gray-400">
+  <!-- Footer Bottom -->
+  <div class="bg-gray-900 text-center text-gray-400 text-sm py-2">
     &copy; {{ year }} A One Albany Wholesale. All rights reserved.
   </div>
 </footer>
