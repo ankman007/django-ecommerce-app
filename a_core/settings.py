@@ -19,7 +19,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://ecommerce-store-3i3i.onrender.com",
 ]
 
-
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 

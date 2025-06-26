@@ -14,4 +14,6 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000
+CMD python -c "import a_core.wsgi"
+
+# CMD python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000
