@@ -14,7 +14,7 @@ DEBUG = os.getenv('DEBUG') == 'True'
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 # For prod
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'https://ecommerce-store-3i3i.onrender.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://ecommerce-store-3i3i.onrender.com/']
 CSRF_TRUSTED_ORIGINS = [
     "https://ecommerce-store-3i3i.onrender.com",
 ]
