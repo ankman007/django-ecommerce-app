@@ -14,12 +14,11 @@ DEBUG = os.getenv('DEBUG') == 'True'
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 # For prod
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://ecommerce-store-3i3i.onrender.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecommerce-store-3i3i.onrender.com']
 CSRF_TRUSTED_ORIGINS = [
     "https://ecommerce-store-3i3i.onrender.com",
 ]
 
-CSRF_TRUSTED_ORIGINS = [ 'https://*' ]
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
@@ -125,7 +124,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_REQUIRED = True
 
