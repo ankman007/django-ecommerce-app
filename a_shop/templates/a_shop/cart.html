@@ -25,10 +25,12 @@
             <span>$<span id="subtotal">0.00</span></span>
           </div>
 
+          {% if cart_items %}
           <div class="d-flex justify-content-between mb-2">
             <span>Shipping</span>
             <span>$<span id="shipping">10.00</span></span>
           </div>
+          {% endif %}
 
           <hr />
 
@@ -76,6 +78,8 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const shippingFixed = 10.0;
+    const shippingRow = document.getElementById("shipping")?.parentElement;
+
     function calculateTotals() {
       let subtotal = 0;
       let anyChecked = false;
@@ -93,25 +97,34 @@
       });
 
       document.getElementById("subtotal").textContent = subtotal.toFixed(2);
-      document.getElementById("total").textContent = (subtotal + shippingFixed).toFixed(2);
 
-      const checkoutBtn = document.getElementById("checkout-button");
+      // Show/hide shipping line and adjust total
       if (anyChecked) {
-        checkoutBtn.disabled = false;
-        checkoutBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        if (shippingRow) shippingRow.style.display = "flex";
+        document.getElementById("total").textContent = (subtotal + shippingFixed).toFixed(2);
       } else {
-        checkoutBtn.disabled = true;
-        checkoutBtn.classList.add("opacity-50", "cursor-not-allowed");
+        if (shippingRow) shippingRow.style.display = "none";
+        document.getElementById("total").textContent = "0.00";
+      }
+
+      // Enable/disable checkout button
+      const checkoutBtn = document.getElementById("checkout-button");
+      if (checkoutBtn) {
+        if (anyChecked) {
+          checkoutBtn.disabled = false;
+          checkoutBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+          checkoutBtn.disabled = true;
+          checkoutBtn.classList.add("opacity-50", "cursor-not-allowed");
+        }
       }
     }
 
     calculateTotals();
 
-    document
-      .querySelectorAll(".item-checkbox, .quantity-input")
-      .forEach((el) => {
-        el.addEventListener("change", calculateTotals);
-      });
+    document.querySelectorAll(".item-checkbox, .quantity-input").forEach((el) => {
+      el.addEventListener("change", calculateTotals);
+    });
   });
 
   document.body.addEventListener('htmx:afterSwap', (e) => {
@@ -121,4 +134,5 @@
     }
   });
 </script>
+
 {% endblock %}
