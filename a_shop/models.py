@@ -2,12 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from decimal import Decimal
-from .utils import generate_short_uuid
 from ckeditor.fields import RichTextField
 from PIL import Image
 from io import BytesIO
 import re
 from django.core.files.base import ContentFile
+import shortuuid
 
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=200)
@@ -27,7 +27,7 @@ class Product(models.Model):
         primary_key=True,
         max_length=22,
         unique=True,
-        default=generate_short_uuid,
+        default=shortuuid.ShortUUID().random(length=8),
         editable=False
     )
     name = models.CharField(max_length=200)

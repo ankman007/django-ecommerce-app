@@ -98,7 +98,6 @@
 
       document.getElementById("subtotal").textContent = subtotal.toFixed(2);
 
-      // Show/hide shipping line and adjust total
       if (anyChecked) {
         if (shippingRow) shippingRow.style.display = "flex";
         document.getElementById("total").textContent = (subtotal + shippingFixed).toFixed(2);
@@ -107,7 +106,6 @@
         document.getElementById("total").textContent = "0.00";
       }
 
-      // Enable/disable checkout button
       const checkoutBtn = document.getElementById("checkout-button");
       if (checkoutBtn) {
         if (anyChecked) {
