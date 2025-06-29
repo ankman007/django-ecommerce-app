@@ -10,17 +10,27 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG') == 'True'
 
-# For dev
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+# When running locally 
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-# For prod
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecommerce-store-3i3i.onrender.com']
+# When in production 
+ALLOWED_HOSTS = ['a1albanywholesale.com', 'www.a1albanywholesale.com']
+
 CSRF_TRUSTED_ORIGINS = [
-    "https://ecommerce-store-3i3i.onrender.com",
+    "https://a1albanywholesale.com",
+    "https://www.a1albanywholesale.com",
 ]
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TRACK_STARTED = True
+CELERY_SEND_EVENTS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -116,7 +126,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media' 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -132,5 +142,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+RECIPIENT_EMAIL = os.getenv('RECIPIENT_EMAIL')
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
