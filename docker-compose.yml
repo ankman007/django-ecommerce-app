@@ -1,12 +1,72 @@
-version: '3.9'
-
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "
+        /wait-for-it.sh db:3306 --timeout=30 --strict -- &&
+        python manage.py migrate --noinput &&
+        python a_core/create_admin.py &&
+        python manage.py collectstatic --noinput &&
+        gunicorn a_core.wsgi:application --bind 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
       - .:/app
     env_file:
       - .env
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  celery:
+    build: .
+    command: celery -A a_core worker --loglevel=info --pool=solo
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
+  flower:
+    build: .
+    command: celery -A a_core flower --port=5555
+    ports:
+      - "5555:5555"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      TZ: Asia/Kathmandu
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:

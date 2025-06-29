@@ -6,6 +6,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib import messages
 from a_shop.models import Order, OrderItem, Product, Cart
+from a_shop.tasks import create_order_task
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -64,31 +65,12 @@ def success(request):
         messages.error(request, "🛒 Cart is empty or expired.")
         return redirect('home')
 
-    user = request.user if request.user.is_authenticated else None
-    order = Order.objects.create(user=user, paid=True)
-
-    for product_id, item in cart.items():
-        try:
-            product = Product.objects.get(pk=product_id)
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=item['quantity'],
-                price=item['price']
-            )
-        except Product.DoesNotExist:
-            continue
+    user_id = request.user.id if request.user.is_authenticated else None
+    create_order_task.delay(user_id, cart)
 
     if 'cart' in request.session:
         del request.session['cart']
         request.session.modified = True
-
-    if request.user.is_authenticated:
-        try:
-            user_cart = Cart.objects.get(user=request.user)
-            user_cart.items.all().delete()
-        except Cart.DoesNotExist:
-            pass
 
     toast_message = "✅ Payment successful! Your order has been placed."
     toast_html = render_to_string("a_shop/partials/toast.html", {"message": toast_message})
