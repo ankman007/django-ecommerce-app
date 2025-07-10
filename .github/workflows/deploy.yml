@@ -1,0 +1,34 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Add server to known_hosts
+      run: |
+        ssh-keyscan -H 194.140.198.4 >> ~/.ssh/known_hosts
+
+    - name: SSH and pull latest code
+      run: |
+        ssh root@194.140.198.4 << 'EOF'
+          cd /home/albany/e-commerce-store
+          git reset --hard HEAD                # Optional: Discard local changes
+          git clean -fd                        # Optional: Remove untracked files
+          git pull origin main
+          chown -R albany:albany /home/albany/e-commerce-store
+          sudo systemctl restart albany
+        EOF
