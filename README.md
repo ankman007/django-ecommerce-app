@@ -1,12 +1,15 @@
 # Project Description 
-Django-based ecommerce store leveraging HTMX for dynamic frontend updates without full page reloads and integrated with Stripe for secure & flexible checkout processing.
+This Django-based eCommerce platform delivers a dynamic, responsive shopping experience with in-page content updates powered by HTMX. It integrates Stripe for secure payment processing, and uses Celery with Redis to manage asynchronous tasks like order confirmation emails. The entire application is containerized with Docker and deployed behind Nginx for scalable and reliable hosting.
+
+🔗 [Live Demo](https://a1albanywholesale.com/)
 
 ## Technology used
 
 - Django
 - HTMX
 - Bootstrap
-- Sqlite3
+- MySQL
+- Celery
 - Stripe API
 
 ## To set up this project
